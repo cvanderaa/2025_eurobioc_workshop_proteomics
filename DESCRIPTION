@@ -28,7 +28,11 @@ Depends:
     msqrob2
 Suggests: 
     BiocFileCache,
+    BiocParallel,
     ggplot2,
+    patchwork,
+    dplyr,
+    ExploreModelMatrix,
     knitr,
     rmarkdown,
     pkgdown
