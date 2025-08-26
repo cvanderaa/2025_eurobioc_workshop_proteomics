@@ -31,6 +31,7 @@ Suggests:
     BiocParallel,
     ggplot2,
     patchwork,
+    ggrepel,
     dplyr,
     ExploreModelMatrix,
     knitr,
