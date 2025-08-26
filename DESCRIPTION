@@ -18,7 +18,7 @@ Description: This package contains the workshop material presented
     during the EuroBioc2025 conference. The workshop demonstrate how 
     to apply an msqrob2 workflow for answering biologically relevant 
     questions from mass spectrometry-based proteomics data. 
-License: MIT
+License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
