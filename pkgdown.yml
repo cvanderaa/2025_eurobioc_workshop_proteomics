@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   get_started: get_started.html
   msqrob2_workshop: msqrob2_workshop.html
-last_built: 2025-08-28T06:45Z
+last_built: 2025-08-28T07:05Z
 urls:
   reference: https://cvanderaa.github.io/2025_eurobioc_workshop_proteomics/reference
   article: https://cvanderaa.github.io/2025_eurobioc_workshop_proteomics/articles
