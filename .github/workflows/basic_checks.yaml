@@ -24,7 +24,7 @@ jobs:
           BiocManager::install(ask=FALSE)
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
-        
+
       - name: Cache R packages
         if: runner.os != 'Windows'
         uses: actions/cache@v4
@@ -38,6 +38,12 @@ jobs:
           BiocManager::repositories()
           remotes::install_deps(dependencies = TRUE, repos = BiocManager::repositories())
           remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+
+      - name: Install specific package versions
+        run: |
+          BiocManager::install("cvanderaa/QFeatures", ref = "uniquePrecId")
+          BiocManager::install("statOmics/msqrob2")
         shell: Rscript {0}
 
       - name: Check
