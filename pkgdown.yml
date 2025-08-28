@@ -2,9 +2,9 @@ pandoc: 3.7.0.2
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  HOWTO_BUILD_WORKSHOP: HOWTO_BUILD_WORKSHOP.html
-  workshop_example: workshop_example.html
-last_built: 2025-08-11T10:11Z
+  get_started: get_started.html
+  msqrob2_workshop: msqrob2_workshop.html
+last_built: 2025-08-28T06:45Z
 urls:
-  reference: https://seandavi.github.io/BuildABiocWorkshop/reference
-  article: https://seandavi.github.io/BuildABiocWorkshop/articles
+  reference: https://cvanderaa.github.io/2025_eurobioc_workshop_proteomics/reference
+  article: https://cvanderaa.github.io/2025_eurobioc_workshop_proteomics/articles
