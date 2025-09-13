@@ -50,9 +50,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/get_started.html">Getting started with the workshop</a>
-    </li>
-    <li>
       <a href="articles/msqrob2_workshop.html">msqrob2TMT: modelling sources of variability in TMT-based proteomics experiments, a use case</a>
     </li>
   </ul>
@@ -77,61 +74,132 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div class="section level1">
-<div class="page-header"><h1 id="buildabiocworkshop">BuildABiocWorkshop<a class="anchor" aria-label="anchor" href="#buildabiocworkshop"></a>
+<div class="page-header"><h1 id="msqrob2-workshop-robust-modelling-workflow-for-mass-spectrometry-based-proteomics">msqrob2 workshop: robust modelling workflow for mass spectrometry-based proteomics<a class="anchor" aria-label="anchor" href="#msqrob2-workshop-robust-modelling-workflow-for-mass-spectrometry-based-proteomics"></a>
 </h1></div>
-<p>This package is a template for building a Bioconductor workshop. The package includes Github actions to:</p>
-<ol style="list-style-type: decimal">
-<li>Set up bioconductor/bioconductor_docker:devel on Github resources</li>
-<li>Install package dependencies for your package (based on the <code>DESCRIPTION</code> file)</li>
-<li>Run <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck</a></code>
-</li>
-<li>Build a pkgdown website and push it to github pages</li>
-<li>Build a docker image with the installed package and dependencies and deploy to <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#pulling-container-images" class="external-link">the Github Container Repository</a> at the name <code>ghcr.io/gihub_user/repo_name</code>, all lowercase.</li>
-</ol>
+<p>Authors: Christophe Vanderaa<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, Stijn Vandenbulcke<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, Laurent Gatto<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, Lieven Clement<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. <br> Last modified: .</p>
 <div class="section level2">
-<h2 id="responsibilities">Responsibilities<a class="anchor" aria-label="anchor" href="#responsibilities"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>Package authors are primarily responsible for:</p>
-<ol style="list-style-type: decimal">
-<li>Creating a landing site of their choosing for their workshops (a website). This website should be listed in the <code>DESCRIPTION</code> file as the <code>URL</code>.</li>
-<li>Creating a docker image that will contain workshop materials and the installed packages necessary to run those materials. The name of the resulting docker image, including “tag” if desired, should be listed in a non-standard tag, <code>DockerImage:</code> in the <code>DESCRIPTION</code> file.</li>
-</ol>
-<p>Both of those tasks can be accomplished using the Github actions included in this template package. The vignette accompanying this package describes how to accomplish both of these tasks.</p>
+<div class="section level3">
+<h3 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
+</h3>
+<p>Mass spectrometry (MS) has become a method of choice for exploring the proteome landscape that drives cellular functions. While technological advancements have significantly increased the sensitivity of MS instruments, obtaining reliable statistical results from these data remains a challenging and often tedious task. Many researchers continue to rely on ad-hoc analysis workflows due to a lack of clear guidelines, which can lead to violations of key statistical assumptions. In this workshop, we will offer a hands-on introduction to the msqrob2 package that provides a set of rigorously validated and benchmarked statistical workflows for MS-based proteomics. These workflows are built on the QFeatures framework for data processing. We will begin by familiarising participants with the input data format and the QFeatures data structure. From there, we will walk through the minimal data processing steps required prior to statistical modelling, explaining when and why each step is necessary. Next, we’ll explore the sources of variation inherent in proteomics data, highlighting their hierarchical structure and demonstrating how linear mixed models can properly account for these complexities. The modelling process will be carried out using msqrob2, which offers additional advantages such as robust and stabilised parameter estimation. Finally, we will demonstrate how to translate biological questions into hypothesis tests and how to prioritise proteomic markers that change in response to a condition of interest. Depending on the progress of the group, we will also briefly explore the emerging field of single-cell proteomics, discussing the additional challenges posed by these data. This workshop is designed for proteomics researchers who want to learn how to analyse their data using reproducible and statistically sound workflows, as well as for omics data analysts interested in expanding their skill set to include proteomics.</p>
 </div>
-<div class="section level2">
-<h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
-</h2>
-<p>For detailed instructions, see the <code>How to build a workshop</code> article/vignette.</p>
-</div>
-<div class="section level2">
-<h2 id="results-of-successful-deployment">Results of successful deployment<a class="anchor" aria-label="anchor" href="#results-of-successful-deployment"></a>
-</h2>
+<div class="section level3">
+<h3 id="pre-requisites">Pre-requisites<a class="anchor" aria-label="anchor" href="#pre-requisites"></a>
+</h3>
 <ul>
-<li>A working docker image that contains the installed package and dependencies.</li>
-<li>An up-to-date <code>pkgdown</code> website at <a href="https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/" class="external-link uri">https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/</a>
+<li>Basic knowledge of R syntax</li>
+<li>Familiarity with the <code>SummarizedExperiment</code> class</li>
+<li>Familiarity with MS-based proteomics data analysis</li>
+<li>Familiarity with statistical analysis (t-tests, design of experiment)</li>
+</ul>
+<p>If you don’t have at least two out of four prerequisites, you are still welcome to follow the workshop, but do not try to run the analysis yourself during the lecture. You should rather focus on the explanations.</p>
+<p>Relevant background reading for the workshop:</p>
+<ul>
+<li>Vandenbulcke S, Vanderaa C, Crook O, Martens L, Clement L. Msqrob2TMT: Robust linear mixed models for inferring differential abundant proteins in labeled experiments with arbitrarily complex design. Mol Cell Proteomics. 2025;24(7):101002. <a href="https://doi.org/10.1016/j.mcpro.2025.101002" class="external-link">Link to paper</a>; <a href="https://www.biorxiv.org/content/10.1101/2024.03.29.587218v1" class="external-link">Link to preprint</a>.</li>
+<li>The <a href="https://rformassspectrometry.github.io/QFeatures/articles/QFeatures.html" class="external-link"><code>QFeatures</code> introduction vignette</a>
 </li>
-<li>Docker image will be tagged with <code>latest</code>, <code>sha-XXXXXX</code> where <code>XXXXXX</code> is the hash of the current <code>master</code> commit, and <code>master</code>.</li>
+<li>Goeminne LJE, Gevaert K, Clement L. Peptide-level Robust Ridge Regression Improves Estimation, Sensitivity, and Specificity in Data-dependent Quantitative Label-free Shotgun Proteomics. Mol Cell Proteomics. 2016;15(2):657-668. <a href="https://doi.org/10.1074/mcp.M115.055897" class="external-link">Link to paper</a>;</li>
 </ul>
 </div>
-<div class="section level2">
-<h2 id="to-use-the-resulting-image">To use the resulting image:<a class="anchor" aria-label="anchor" href="#to-use-the-resulting-image"></a>
-</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-e</span> PASSWORD=<span class="op">&lt;</span>choose_a_password_for_rstudio<span class="op">&gt;</span> -p 8787:8787 YOURDOCKERIMAGENAME</span></code></pre></div>
-<p>Once running, navigate to <a href="http://localhost:8787/" class="external-link uri">http://localhost:8787/</a> and then login with <code>rstudio</code>:<code>yourchosenpassword</code>.</p>
-<p>To try with <strong>this</strong> repository docker image:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-e</span> PASSWORD=abc <span class="at">-p</span> 8787:8787 ghcr.io/bioconductor/buildabiocworkshop</span></code></pre></div>
-<p><em>NOTE</em>: Running docker that uses the password in plain text like above exposes the password to others in a multi-user system (like a shared workstation or compute node). In practice, consider using an environment variable instead of plain text to pass along passwords and other secrets in docker command lines.</p>
+<div class="section level3">
+<h3 id="participation">Participation<a class="anchor" aria-label="anchor" href="#participation"></a>
+</h3>
+<p>The workshop will introduce participants to important concepts regarding the statistical analysis of MS-based proteomics and how the underlying modelling assumption relate to the experimental data characteristics. The concepts will be embedded in a real-life analysis, demonstrating the code to carry out each step from the input data up to the biological interpretation. Participants can follow the workshop by running along the analysis on their local computers, but you are not requested to as the code will be live demonstrated. We did not include exercise to allocate time for questions and interactivity with the audience.</p>
 </div>
-<div class="section level2">
-<h2 id="whatcha-get">Whatcha get<a class="anchor" aria-label="anchor" href="#whatcha-get"></a>
-</h2>
+<div class="section level3">
+<h3 id="r--bioconductor-packages-used">
+<em>R</em> / <em>Bioconductor</em> packages used<a class="anchor" aria-label="anchor" href="#r--bioconductor-packages-used"></a>
+</h3>
 <ul>
-<li><a href="https://bioconductor.github.io/BuildABiocWorkshop" class="external-link uri">https://bioconductor.github.io/BuildABiocWorkshop</a></li>
-<li>A Docker image that you can run locally, in the cloud, or (usually) even as a singularity container on HPC systems.</li>
+<li>msqrob2</li>
+<li>BiocFileCache</li>
+<li>BiocParallel</li>
+<li>ggplot2</li>
+<li>patchwork</li>
+<li>dplyr</li>
+<li>scater</li>
+<li>ExploreModelMatrix</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="time-outline">Time outline<a class="anchor" aria-label="anchor" href="#time-outline"></a>
+</h3>
+<table class="table">
+<thead><tr>
+<th>Activity</th>
+<th>Time</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Introduction and setup</td>
+<td>10m</td>
+</tr>
+<tr>
+<td>The <code>QFeatures</code> data class</td>
+<td>20m</td>
+</tr>
+<tr>
+<td>Data preprocessing</td>
+<td>15m</td>
+</tr>
+<tr>
+<td>Break</td>
+<td>15m</td>
+</tr>
+<tr>
+<td>Modelling sources of variation</td>
+<td>20m</td>
+</tr>
+<tr>
+<td>Hypothesis testing</td>
+<td>20m</td>
+</tr>
+<tr>
+<td>Wrap up</td>
+<td>5m</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="workshop-goals-and-objectives">Workshop goals and objectives<a class="anchor" aria-label="anchor" href="#workshop-goals-and-objectives"></a>
+</h3>
+<p>List “big picture” student-centered workshop goals and learning objectives. Learning goals and objectives are related, but not the same thing. These goals and objectives will help some people to decide whether to attend the conference for training purposes, so please make these as precise and accurate as possible.</p>
+</div>
+<div class="section level3">
+<h3 id="learning-goals">Learning goals<a class="anchor" aria-label="anchor" href="#learning-goals"></a>
+</h3>
+<ul>
+<li>Get an overview of the main challenges and artefacts in proteomics data analysis, and how a well-justified data processing workflow can overcome these issues.</li>
+<li>Get a feeling on how the experimental design influences the main sources of variability, and hence the modelling strategy.</li>
+<li>Understand why mixed models are ideally suited for proteomics data analysis, and understand the difference between fixed effects and random effects.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="learning-objectives">Learning objectives<a class="anchor" aria-label="anchor" href="#learning-objectives"></a>
+</h3>
+<ul>
+<li>Use <code>QFeatures</code> to manipulate and visualize proteomics data</li>
+<li>Use <code>msqrob2</code> to answer biological questions from processed data</li>
+<li>Learn how to translate these biological questions into model-related parameter combinations.</li>
 </ul>
 </div>
 </div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr>
+<ol>
+<li id="fn1"><p>UGhent<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>UGhent<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>UCLouvain<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>UGhent<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

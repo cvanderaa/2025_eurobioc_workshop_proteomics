@@ -49,9 +49,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/get_started.html">Getting started with the workshop</a>
-    </li>
-    <li>
       <a href="../articles/msqrob2_workshop.html">msqrob2TMT: modelling sources of variability in TMT-based proteomics experiments, a use case</a>
     </li>
   </ul>
@@ -83,10 +80,12 @@ TMT-based proteomics experiments, a use case</h1>
 Vanderaa</h4>
                                     <h4 data-toc-skip class="author">Stijn
 Vandenbulcke</h4>
+                                    <h4 data-toc-skip class="author">Laurent
+Gatto</h4>
                                     <h4 data-toc-skip class="author">Lieven
 Clement</h4>
                         
-            <h4 data-toc-skip class="date">28 August 2025</h4>
+            <h4 data-toc-skip class="date">13 September 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cvanderaa/2025_eurobioc_workshop_proteomics/blob/devel/vignettes/msqrob2_workshop.rmd" class="external-link"><code>vignettes/msqrob2_workshop.rmd</code></a></small>
       <div class="hidden name"><code>msqrob2_workshop.rmd</code></div>
@@ -718,11 +717,17 @@ rows).</p>
 </tbody>
 </table>
 <p>We perform a little cleanup of the sample annotations to generate the
-information needed for later data modelling, namely we extract the diet
-type and the duration of the diet from the condition variable.</p>
+information needed for later data modelling, namely</p>
+<ol style="list-style-type: decimal">
+<li>We extract the diet type from the condition variable.</li>
+<li>We extract the diet duration from the condition variable.</li>
+<li>We rename the <code>Channel</code> column to <code>Label</code> for
+more clarity with the main text.</li>
+</ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">coldata</span><span class="op">$</span><span class="va">Duration</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_.*"</span>, <span class="st">""</span>, <span class="va">coldata</span><span class="op">$</span><span class="va">Condition</span><span class="op">)</span></span>
-<span><span class="va">coldata</span><span class="op">$</span><span class="va">Diet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">".*_"</span>, <span class="st">""</span>, <span class="va">coldata</span><span class="op">$</span><span class="va">Condition</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">coldata</span><span class="op">$</span><span class="va">Duration</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_.*"</span>, <span class="st">""</span>, <span class="va">coldata</span><span class="op">$</span><span class="va">Condition</span><span class="op">)</span> <span class="co">## 1.</span></span>
+<span><span class="va">coldata</span><span class="op">$</span><span class="va">Diet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">".*_"</span>, <span class="st">""</span>, <span class="va">coldata</span><span class="op">$</span><span class="va">Condition</span><span class="op">)</span> <span class="co">## 2.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">coldata</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Label"</span> <span class="co">## 3.</span></span></code></pre></div>
 <p>We will also subset the data set to reduce computational costs. If
 you want to run the vignette on the full data set, you can skip this
 chunk. We here randomly sample 500 proteins from the experiment.</p>
@@ -760,7 +765,7 @@ link each sample to the quantification column in the PSM table. See
 <code>?readQFeatures()</code> for more details.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coldata</span><span class="op">$</span><span class="va">runCol</span> <span class="op">&lt;-</span> <span class="va">coldata</span><span class="op">$</span><span class="va">Run</span></span>
-<span><span class="va">coldata</span><span class="op">$</span><span class="va">quantCols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Abundance.."</span>, <span class="va">coldata</span><span class="op">$</span><span class="va">Channel</span><span class="op">)</span></span>
+<span><span class="va">coldata</span><span class="op">$</span><span class="va">quantCols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Abundance.."</span>, <span class="va">coldata</span><span class="op">$</span><span class="va">Label</span><span class="op">)</span></span>
 <span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/QFeatures/man/readQFeatures.html" class="external-link">readQFeatures</a></span><span class="op">(</span><span class="va">psms</span>, colData <span class="op">=</span> <span class="va">coldata</span>,</span>
 <span>                       quantCols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">coldata</span><span class="op">$</span><span class="va">quantCols</span><span class="op">)</span>,</span>
 <span>                       runCol <span class="op">=</span> <span class="st">"Spectrum.File"</span>, name <span class="op">=</span> <span class="st">"psms"</span><span class="op">)</span></span>
@@ -781,7 +786,7 @@ retrieved using <code>colData()</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 6 rows and 11 columns</span></span>
-<span><span class="co">##       Channel   Condition           Run  BioReplicate       Mixture</span></span>
+<span><span class="co">##         Label   Condition           Run  BioReplicate       Mixture</span></span>
 <span><span class="co">##   &lt;character&gt; &lt;character&gt;   &lt;character&gt;   &lt;character&gt;   &lt;character&gt;</span></span>
 <span><span class="co">## 1         126     Long_LF PAMI-176_M... PAMI-176_M... PAMI-176_M...</span></span>
 <span><span class="co">## 2        127N     Long_LF PAMI-176_M... PAMI-176_M... PAMI-176_M...</span></span>
@@ -805,43 +810,9 @@ retrieved using <code>colData()</code>.</p>
 <span><span class="co">## 4 Abundance....</span></span>
 <span><span class="co">## 5 Abundance....</span></span>
 <span><span class="co">## 6 Abundance....</span></span></code></pre>
-<p>We can also retrieve the quantitative values for each set using
-<code>assays()</code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">assay</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..126</span></span>
-<span><span class="co">## 12                                                                               NA</span></span>
-<span><span class="co">## 87                                                                         6833.269</span></span>
-<span><span class="co">## 335                                                                              NA</span></span>
-<span><span class="co">## 433                                                                       12512.472</span></span>
-<span><span class="co">## 434                                                                       49765.685</span></span>
-<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..127N</span></span>
-<span><span class="co">## 12                                                                          395.4659</span></span>
-<span><span class="co">## 87                                                                        13879.3746</span></span>
-<span><span class="co">## 335                                                                               NA</span></span>
-<span><span class="co">## 433                                                                        6235.6969</span></span>
-<span><span class="co">## 434                                                                       21062.5639</span></span>
-<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..127C</span></span>
-<span><span class="co">## 12                                                                                NA</span></span>
-<span><span class="co">## 87                                                                          8880.944</span></span>
-<span><span class="co">## 335                                                                               NA</span></span>
-<span><span class="co">## 433                                                                         5733.971</span></span>
-<span><span class="co">## 434                                                                        26067.937</span></span>
-<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..128N</span></span>
-<span><span class="co">## 12                                                                          864.8956</span></span>
-<span><span class="co">## 87                                                                         8984.1755</span></span>
-<span><span class="co">## 335                                                                               NA</span></span>
-<span><span class="co">## 433                                                                        6134.0270</span></span>
-<span><span class="co">## 434                                                                       19417.5524</span></span>
-<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..128C</span></span>
-<span><span class="co">## 12                                                                          3031.182</span></span>
-<span><span class="co">## 87                                                                          8763.722</span></span>
-<span><span class="co">## 335                                                                               NA</span></span>
-<span><span class="co">## 433                                                                         6151.314</span></span>
-<span><span class="co">## 434                                                                        19096.883</span></span></code></pre>
 <p>Finally, the remaining PSM annotations are available for each set in
 the corresponding <code>rowData</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 6 rows and 39 columns</span></span>
 <span><span class="co">##         Checked  Confidence Identifying.Node PSM.Ambiguity Annotated.Sequence</span></span>
@@ -916,6 +887,48 @@ the corresponding <code>rowData</code>.</p>
 <span><span class="co">## 433               20       3.15610e-05          0.0000000      4.442e-05</span></span>
 <span><span class="co">## 434               20       2.16708e-03          0.0001685      1.342e-03</span></span>
 <span><span class="co">## 543               14       1.36813e-05          0.0000000      1.170e-06</span></span></code></pre>
+<p>We can also retrieve the quantitative values for each set using
+<code>assays()</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">assay</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..126</span></span>
+<span><span class="co">## 12                                                                               NA</span></span>
+<span><span class="co">## 87                                                                         6833.269</span></span>
+<span><span class="co">## 335                                                                              NA</span></span>
+<span><span class="co">## 433                                                                       12512.472</span></span>
+<span><span class="co">## 434                                                                       49765.685</span></span>
+<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..127N</span></span>
+<span><span class="co">## 12                                                                          395.4659</span></span>
+<span><span class="co">## 87                                                                        13879.3746</span></span>
+<span><span class="co">## 335                                                                               NA</span></span>
+<span><span class="co">## 433                                                                        6235.6969</span></span>
+<span><span class="co">## 434                                                                       21062.5639</span></span>
+<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..127C</span></span>
+<span><span class="co">## 12                                                                                NA</span></span>
+<span><span class="co">## 87                                                                          8880.944</span></span>
+<span><span class="co">## 335                                                                               NA</span></span>
+<span><span class="co">## 433                                                                         5733.971</span></span>
+<span><span class="co">## 434                                                                        26067.937</span></span>
+<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..128N</span></span>
+<span><span class="co">## 12                                                                          864.8956</span></span>
+<span><span class="co">## 87                                                                         8984.1755</span></span>
+<span><span class="co">## 335                                                                               NA</span></span>
+<span><span class="co">## 433                                                                        6134.0270</span></span>
+<span><span class="co">## 434                                                                       19417.5524</span></span>
+<span><span class="co">##     PAMI-176_Mouse_A-J_TMT_40ug_14pctACN_25cm_120min_20160223_OT.raw_Abundance..128C</span></span>
+<span><span class="co">## 12                                                                          3031.182</span></span>
+<span><span class="co">## 87                                                                          8763.722</span></span>
+<span><span class="co">## 335                                                                               NA</span></span>
+<span><span class="co">## 433                                                                         6151.314</span></span>
+<span><span class="co">## 434                                                                        19096.883</span></span></code></pre>
+<p>Note that some values are missing. It is important that missing
+values are encoded using <code>NA</code>. For MS experiments, we shoul
+not encode non-observed values with a zero. This is because true zeros
+(the peptide ion is absent from the sample) cannot be distinguished from
+technical zeros (the peptide was missed by the instrument). We therefore
+replace any zero in the quantitative data with an <code>NA</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/QFeatures/man/QFeatures-missing-data.html" class="external-link">zeroIsNA</a></span><span class="op">(</span><span class="va">mouse</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -925,12 +938,6 @@ the corresponding <code>rowData</code>.</p>
 structure, meaning that we can directly make use of
 <code>QFeatures</code>’ data preprocessing functionality (see also the
 <code>QFeatures</code> <a href="https://rformassspectrometry.github.io/QFeatures/articles/Processing.html" class="external-link">documentation</a>).</p>
-<p>The very first data processing step for MS experiments is to replace
-any zero PSM intensity by a missing value (see
-<code>?zeroIsNA()</code>). This is because true zeros (the peptide is
-absent from the sample) cannot be distinguished from technical zeros
-(the peptide was missed by the instrument). However, Skyline already
-encodes zeros by <code>NA</code>s, so we can skip this step.</p>
 <div class="section level3">
 <h3 id="psm-filtering">PSM filtering<a class="anchor" aria-label="anchor" href="#psm-filtering"></a>
 </h3>
@@ -939,7 +946,7 @@ are missing in a run. We keep the spectrum as soon as the reporter ions
 are observed in at least 3 out of 10 TMT labels of the run (same cut-off
 as applied in <a href="http://dx.doi.org/10.1074/mcp.RA120.002105" class="external-link">Huang
 et al. 2020</a>)/.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterNA</a></span><span class="op">(</span><span class="va">mouse</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span>, pNA <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="co">## 2.</span></span></code></pre></div>
 <p>We next remove PSMs that could not be mapped to a protein or that map
 to multiple proteins (the protein identifier contains multiple
@@ -947,7 +954,7 @@ identifiers separated by a <code>;</code>). We use
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/filterFeatures.html" class="external-link">filterFeatures()</a></code> that will keep the row that fulfill the
 condition below. Note that <code>Protein.Accessions</code> is a column
 generated by Skyline that is available in the <code>rowData</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/filterFeatures.html" class="external-link">filterFeatures</a></span><span class="op">(</span></span>
 <span>    <span class="va">mouse</span>, <span class="op">~</span> <span class="va">Protein.Accessions</span> <span class="op">!=</span> <span class="st">""</span> <span class="op">&amp;</span> <span class="co">## Remove failed protein inference</span></span>
 <span>        <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">";"</span>, <span class="va">Protein.Accessions</span><span class="op">)</span><span class="op">)</span> <span class="co">## Remove protein groups</span></span></code></pre></div>
@@ -967,7 +974,7 @@ each ionID based on the summed intensity.</li>
 <li>For each ion that maps to multiple PSMs, only keep the PSM with the
 highest summed intensity, that is that ranks first.</li>
 </ol>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">rowdata</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span>    <span class="va">rowdata</span><span class="op">$</span><span class="va">ionID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rowdata</span><span class="op">$</span><span class="va">Annotated.Sequence</span>, <span class="va">rowdata</span><span class="op">$</span><span class="va">Charge</span><span class="op">)</span> <span class="co">## 1.</span></span>
@@ -986,16 +993,15 @@ unique ion within a run. So we will refer to the data as “PSM-level” or
 <div class="section level3">
 <h3 id="preprocessing-workflow">Preprocessing workflow<a class="anchor" aria-label="anchor" href="#preprocessing-workflow"></a>
 </h3>
-<p>We can now prepare the data for modelling. The workflow consists of
-mains steps that ensure the data complies to <code>msqrob2</code>’s
-requirements:</p>
+<p>We can now prepare the data for modelling. The workflow ensures the
+data complies to <code>msqrob2</code>’s requirements:</p>
 <ol style="list-style-type: decimal">
 <li>Intensities are log-transformed.</li>
 <li>Samples are normalised.</li>
 <li>(optionally) PSMs intensities are summarised into protein abundance
 values for protein-level workflows.</li>
 </ol>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span></span>
 <span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/QFeatures/man/QFeatures-processing.html" class="external-link">logTransform</a></span><span class="op">(</span> <span class="co">## 1.</span></span>
 <span>    <span class="va">mouse</span>, <span class="va">sNames</span>, name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sNames</span>, <span class="st">"_log"</span><span class="op">)</span>, base <span class="op">=</span> <span class="fl">2</span></span>
@@ -1014,7 +1020,7 @@ authors to obtain normalisation factors since msqrob2TMT workflows do
 not require normalisation from reference label. The information about
 which labels are normalisation labels is available from the
 <code>colData</code>, in the <code>Condition</code> column.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">$</span><span class="va">Condition</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Long_HF  Long_LF   Long_M     Norm Short_HF Short_LF </span></span>
@@ -1022,7 +1028,7 @@ which labels are normalisation labels is available from the
 <p>We remove any sample that is marked as <code>Norm</code>. We also
 remove sample that are annotated as <code>Long_M</code> since we could
 not find documentation for this group.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu">subsetByColData</span><span class="op">(</span></span>
 <span>    <span class="va">mouse</span>, <span class="va">mouse</span><span class="op">$</span><span class="va">Condition</span> <span class="op">!=</span> <span class="st">"Norm"</span> <span class="op">&amp;</span> <span class="va">mouse</span><span class="op">$</span><span class="va">Condition</span> <span class="op">!=</span> <span class="st">"Long_M"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -1031,24 +1037,22 @@ runs in a single PSM set for PSM-level models. In order to correctly
 match PSMs across rus, we provide the <code>fcol</code> argument,
 telling the function to join PSM with the same <code>ionID</code> in one
 line.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/QFeatures/man/joinAssays.html" class="external-link">joinAssays</a></span><span class="op">(</span><span class="va">mouse</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sNames</span>, <span class="st">"_norm"</span><span class="op">)</span>, fcol <span class="op">=</span> <span class="st">"ionID"</span>, <span class="st">"ions_norm"</span><span class="op">)</span></span></code></pre></div>
 <p>We do the same for joining the protein sets into a single set for
 protein-level models. Note that we don’t need to provide
 <code>fcol</code> since the function will use the set’s rownames
 (generated by <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">aggregateFeatures()</a></code>).</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/QFeatures/man/joinAssays.html" class="external-link">joinAssays</a></span><span class="op">(</span><span class="va">mouse</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sNames</span>, <span class="st">"_proteins"</span><span class="op">)</span>, <span class="st">"proteins"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="statistical-modelling">Statistical modelling<a class="anchor" aria-label="anchor" href="#statistical-modelling"></a>
+<h2 id="data-modelling">Data modelling<a class="anchor" aria-label="anchor" href="#data-modelling"></a>
 </h2>
 <p>The preprocessed data can now be modelled to answer biologically
-relevant questions.</p>
-<div class="section level3">
-<h3 id="model-definition">Model definition<a class="anchor" aria-label="anchor" href="#model-definition"></a>
-</h3>
+relevant questions. But first, we need to understand the data and what
+are the effect to be modelled.</p>
 <div class="section level4">
 <h4 id="experimental-design">Experimental design<a class="anchor" aria-label="anchor" href="#experimental-design"></a>
 </h4>
@@ -1059,26 +1063,86 @@ short duration (<code>Short</code>) or a long duration
 (<code>Long</code>). Note that each group contains 5 mice but the
 peptides from each sample have been fractionated in 9 fractions, leading
 to 45 units per group.</p>
-<div class="float">
-<img src="figs/mouse_experiment.png" alt="Overview of the experimental design. Taken from Plubell et al. 2017."><div class="figcaption">Overview of the experimental design. Taken from
-Plubell et al. 2017.</div>
+<div class="figure">
+<img src="figs/mouse_experiment.png" alt="Overview of the experimental design. Taken from Plubell et al. 2017." width="353"><p class="caption">
+Overview of the experimental design. Taken from Plubell et al. 2017.
+</p>
 </div>
 <p>So first, we need to identify the experimental factors of interest.
 In this case, we are interested in the effects of diet type and the
 effect of diet duration. The table below confirms we have a balanced
 design for each condition.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>Diet <span class="op">=</span> <span class="va">mouse</span><span class="op">$</span><span class="va">Diet</span>, Duration <span class="op">=</span> <span class="va">mouse</span><span class="op">$</span><span class="va">Duration</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##     Duration</span></span>
 <span><span class="co">## Diet Long Short</span></span>
 <span><span class="co">##   HF   45    45</span></span>
 <span><span class="co">##   LF   45    45</span></span></code></pre>
+<p>Furthermore, there are potential unwanted sources of variation: the
+experimental unit (i.e. the mouse, <code>BioReplicate</code>), the
+fraction (<code>Fraction</code>), the run (<code>Run</code>), the TMT
+mixture (<code>Mixture</code>). Data exploration will provide a feeling
+about how these influence the data.</p>
 </div>
+<div class="section level3">
+<h3 id="data-exploration">Data exploration<a class="anchor" aria-label="anchor" href="#data-exploration"></a>
+</h3>
+<p>Data exploration aims to highlight the main sources of variation in
+the data prior to data modelling and can pinpoint outlying or
+off-behaving samples. A common approach for data exploration is to
+perform dimension reducion, such as Multi Dimensional Scaling (MDS). We
+will first extract the set to explore using
+<code>getWithColData()</code>. This function extracts the set of
+interest along with all the associated sample annotations (used for plot
+colouring).</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">getWithColData</span><span class="op">(</span><span class="va">mouse</span>, <span class="st">"proteins"</span><span class="op">)</span></span></code></pre></div>
+<p>We then use the <code>scater</code> package to compute and plot the
+PCA. For technical reasons, it requires
+<code>SingleCellExperiment</code> class object, but these can easily be
+generated from a <code>SummarizedExperiment</code> object.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://bioconductor.org/packages/scater/" class="external-link">"scater"</a></span><span class="op">)</span></span>
+<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runMDS.html" class="external-link">runMDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/methods/as.html" class="external-link">as</a></span><span class="op">(</span><span class="va">se</span>, <span class="st">"SingleCellExperiment"</span><span class="op">)</span>, exprs_values <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p>s We can now plot the MDS and colour each sample based on different
+potential sources of variation.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotMDS</a></span><span class="op">(</span><span class="va">se</span>, colour_by <span class="op">=</span> <span class="st">"Run"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Coloured by Run"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">27</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotMDS</a></span><span class="op">(</span><span class="va">se</span>, colour_by <span class="op">=</span> <span class="st">"Fraction"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Coloured by Fraction"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotMDS</a></span><span class="op">(</span><span class="va">se</span>, colour_by <span class="op">=</span> <span class="st">"BioReplicate"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Coloured by BioReplicate"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotMDS</a></span><span class="op">(</span><span class="va">se</span>, colour_by <span class="op">=</span> <span class="st">"Mixture"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Coloured by Mixture"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotMDS</a></span><span class="op">(</span><span class="va">se</span>, colour_by <span class="op">=</span> <span class="st">"Diet"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Coloured by Diet"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotMDS</a></span><span class="op">(</span><span class="va">se</span>, colour_by <span class="op">=</span> <span class="st">"Duration"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Coloured by Duration"</span><span class="op">)</span> <span class="op">&amp;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-32-1.png" width="700"></p>
+<p>The data exploration leads to several observations:</p>
+<ul>
+<li>The strongest source of variation is associated with the MS
+acquisition run.</li>
+<li>Part of this run effect is influenced by which fraction it contains
+since samples from the same fraction tend to be closer than samples from
+different fractions.</li>
+<li>It is difficult to identify an effect of mouse (biological
+replicate) because every run contains distinct mice. However, this does
+not exclude an effect of mice which has been identified as a potential
+source of variation and hence should still be modelled.</li>
+<li>There is potentially also an effect of TMT mixture since samples
+from the same mixtures tend to cluster together (in the center of the
+plot). However, this effect are more subtle to detect and difficult to
+disentangle from the run and fraction effects.</li>
+<li>Although again very subtle, we can see within each run that samples
+from the mice with the same diet tends to group together. However, these
+effects are overwhelmed by the run effects. An effect of duration is to
+subtle to pinpoint from the current data exploration.</li>
+</ul>
+<p>Data modelling disentangles the different sources of variation, given
+their are properly defined in the model, hence the next section.</p>
 <div class="section level4">
 <h4 id="sources-of-variation">Sources of variation<a class="anchor" aria-label="anchor" href="#sources-of-variation"></a>
 </h4>
-<p>Proteomics data contain several sources of variation that need to be
-accounted for by the model:</p>
+<p>We will now formally define the sources of variation and describe how
+they are modelled:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Treatment of interest</strong>: we model the source of
 variation induced by the experimental treatment of interest as a
@@ -1098,8 +1162,8 @@ involves biological replication as the adipose tissue extracts were
 sampled from 20 mice (5 mice per Diet x Duration combination).
 Replicate-specific effects occurs due to uncontrollable factors, such as
 social behavior, feeding behavior, physical activity, occasional
-injury,… Two mice will never provide exactly the sample material, even
-were they genetically identical and manipulated identically. These
+injury,… Two mice will never provide exactly the same sample material,
+even were they genetically identical and manipulated identically. These
 effects are typically modelled as random effects which are considered as
 a random sample from the population of all possible mice and are assumed
 to be i.i.d normally distributed with mean 0 and constant variance,
@@ -1109,7 +1173,7 @@ random effects thus models the correlation in the data, explicitly. We
 expect that intensities from the same mouse are more alike than
 intensities between mice.</p></li>
 </ol>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">$</span><span class="va">BioReplicate</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 20</span></span></code></pre>
 <ol start="3" style="list-style-type: decimal">
@@ -1120,15 +1184,10 @@ measured within the same TMT label may be more similar than samples
 measured within different TMT labels. Since these effects may not be
 reproducible from one experiment to another, for instance because each
 TMT kit may potentially contain different impurity ratios, we can
-account for this correlation using a random effect for TMT label.
-However, we will not model the effects of labels. Normalisation already
-removes part of the label effect and including a random effect for label
-nested within run (see below) is sufficient, as confirmed from previous
-spike-in studies.</li>
+account for this correlation using a random effect for TMT label.</li>
 </ol>
-<p><strong>TODO</strong>: include label effect or not?</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">$</span><span class="va">Channel</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">$</span><span class="va">Label</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 10</span></span></code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>
@@ -1137,7 +1196,7 @@ to one out of 3 mixtures. Again, we expect protein intensities from the
 same mixture will be more alike than those of different mixtures. Hence,
 we will add a random effect for mixture.</li>
 </ol>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">$</span><span class="va">Mixture</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  PAMI-176_Mouse_A-J  PAMI-176_Mouse_K-T PAMI-194_Mouse_U-Dd </span></span>
@@ -1151,7 +1210,7 @@ this correlation in the data. Note that each sample has been acquired in
 9 fractions, each fraction being measured in a separate run. Accounting
 for the effects of run will also absorb the effects of fraction.</li>
 </ol>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mouse</span><span class="op">$</span><span class="va">Run</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 27</span></span></code></pre>
 <ol start="6" style="list-style-type: decimal">
@@ -1177,33 +1236,22 @@ a random effect for label nested in run.</p></li>
 models that can estimate and predict fixed and random effects,
 respectively.</p>
 <p>Now we have identified the sources of variation, we can define a
-model. <code>msqrob2</code> also allows to model using main effects for
-<code>Diet</code> and <code>Duration</code>, and a
-<code>Diet:Duration</code> interaction, to account for proteins for
-which the <code>Diet</code> effect changes according to
-<code>Duration</code>, and vice versa, which can be written as
-<code>Diet + Duration + Diet:Duration</code>, shortened into
+model. We will model the main effects for <code>Diet</code> and
+<code>Duration</code>, and a <code>Diet:Duration</code> interaction, to
+account for proteins for which the <code>Diet</code> effect changes
+according to <code>Duration</code>, and vice versa, which can be written
+as <code>Diet + Duration + Diet:Duration</code>, shortened into
 <code>Diet * Duration</code>. Adding the technical sources of variation,
 the model becomes.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Diet</span> <span class="op">*</span> <span class="va">Duration</span> <span class="op">+</span> <span class="co">## (1) fixed effect for Diet and Duration with interaction</span></span>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="op">~</span> <span class="va">Diet</span> <span class="op">*</span> <span class="va">Duration</span> <span class="op">+</span> <span class="co">## (1) fixed effect for Diet and Duration with interaction</span></span>
 <span>  <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">BioReplicate</span><span class="op">)</span> <span class="op">+</span>  <span class="co">## (2) random effect for biological replicate (mouse)      </span></span>
-<span>  <span class="co"># (1 | Channel) + ## (3) random effect for label is negligible</span></span>
+<span>  <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Label</span><span class="op">)</span> <span class="op">+</span> <span class="co">## (3) random effect for label</span></span>
 <span>  <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Mixture</span><span class="op">)</span> <span class="op">+</span> <span class="co">## (4) random effect for mixture</span></span>
 <span>  <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Run</span><span class="op">)</span> <span class="op">+</span> <span class="co">## (5) random effect for MS run</span></span>
 <span>  <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Run</span><span class="op">:</span><span class="va">ionID</span><span class="op">)</span> <span class="op">+</span> <span class="co">## (6) random effect for spectrum, i.e. ionID nested in run</span></span>
-<span>  <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Run</span><span class="op">:</span><span class="va">Channel</span><span class="op">)</span>  <span class="co">## (7) random effect for label nested in MS run</span></span></code></pre></div>
-<p>Note, that we do not suppress the intercept (the model start with
-<code>1 +</code>), because the first level of every factor is absorbed
-in the intercept.</p>
-<p><strong>TODO</strong>: keep below?</p>
-<p>Note also that we have commented out the random effect for label in
-the model. In practice, normalisation already removes part of the label
-effect and is sufficient. You can experiment this yourself by removing
-the comment sign <code>#</code> in front of <code>(1 | Channel) +</code>
-across the vignette, and see how the results may change.</p>
-<p>Now we have defined the models, we can run the <code>msqrob2</code>
-statistical workflow.</p>
+<span>  <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Run</span><span class="op">:</span><span class="va">Label</span><span class="op">)</span>  <span class="co">## (7) random effect for label nested in MS run</span></span></code></pre></div>
+<p>We can run the <code>msqrob2</code> statistical workflow.</p>
 </div>
 </div>
 <div class="section level3">
@@ -1215,7 +1263,7 @@ quantitative values from the <code>"ions_norm"</code> set generated
 after preprocessing, and fits <code>model</code>. The variables defined
 in <code>model</code> are automatically retrieved from the
 <code>colData</code> (i.e. <code>"Diet"</code>, <code>"Duration"</code>,
-<code>"Channel"</code>, <code>"Run"</code>, <code>"Mixture"</code>,
+<code>"Label"</code>, <code>"Run"</code>, <code>"Mixture"</code>,
 <code>"BioReplicate"</code>) and from the <code>rowData</code> (i.e.
 <code>"ionID"</code>). Moreover, we tell the function how the PSM-level
 data is grouped to protein data through the <code>fcol</code> argument,
@@ -1229,7 +1277,7 @@ is stored in the <code>rowData</code> for each protein as a
 enable M-estimation (<code>robust = TRUE</code>) for improved robustness
 against outliers and ridge penalisation (<code>ridge = TRUE</code>) to
 stabilise the parameter estimation.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/msqrobAggregate.html" class="external-link">msqrobAggregate</a></span><span class="op">(</span></span>
 <span>    <span class="va">mouse</span>, i <span class="op">=</span> <span class="st">"ions_norm"</span>,</span>
 <span>    formula <span class="op">=</span> <span class="va">model</span>,</span>
@@ -1257,16 +1305,16 @@ as a contrast. To aid defining contrasts, we will visualise the
 experimental design using the <code>ExploreModelMatrix</code> package.
 Since we are not interested in technical effects, we will only focus on
 the variables of interest, here <code>Diet * Duration</code>.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/csoneson/ExploreModelMatrix" class="external-link">"ExploreModelMatrix"</a></span><span class="op">)</span></span>
 <span><span class="va">vd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ExploreModelMatrix/man/VisualizeDesign.html" class="external-link">VisualizeDesign</a></span><span class="op">(</span></span>
 <span>    sampleData <span class="op">=</span>  <span class="fu">colData</span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span>,</span>
-<span>    designFormula <span class="op">=</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">Diet</span> <span class="op">*</span> <span class="va">Duration</span>,</span>
+<span>    designFormula <span class="op">=</span> <span class="op">~</span> <span class="va">Diet</span> <span class="op">*</span> <span class="va">Duration</span>,</span>
 <span>    textSizeFitted <span class="op">=</span> <span class="fl">4</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">vd</span><span class="op">$</span><span class="va">plotlist</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span></code></pre>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-34-1.png" width="700"></p>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-39-1.png" width="700"></p>
 <p>Assessing the difference between low-fat and high-fat diets for short
 duration boils down to assessing the difference between the
 <code>Short_LF</code> and <code>Short_HF</code>. The mean for the short
@@ -1275,18 +1323,18 @@ low-fat diet group is defined by
 The mean for the short high-fat diet group is defined by
 <code>(Intercept) + DurationShort</code>. The difference between the two
 results in the contrast below:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="st">"ridgeDietLF + ridgeDietLF:DurationShort"</span></span></code></pre></div>
 <p>Note that because we used ridge regression for modelling, we need to
 prefix the parameter names with <code>ridge</code>. We can further
 specify the null hypothesis, that is we are interest whether the
 differences between the two groups is different from zero.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">hypothesis1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "ridgeDietLF + ridgeDietLF:DurationShort = 0"</span></span></code></pre>
 <p>We next use <code><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast()</a></code> to build a contrast
 matrix.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast</a></span><span class="op">(</span></span>
 <span>    <span class="va">hypothesis1</span>,</span>
 <span>    parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ridgeDietLF"</span>,<span class="st">"ridgeDurationShort"</span>,<span class="st">"ridgeDietLF:DurationShort"</span><span class="op">)</span></span>
@@ -1300,33 +1348,35 @@ matrix.</p>
 object with the fitted model and the contrast matrix we just built.
 Again, the results are stored in the set containing the model, here
 <code>proteins_msqrob</code></p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/hypothesisTest.html" class="external-link">hypothesisTest</a></span><span class="op">(</span></span>
 <span>    <span class="va">mouse</span>, i <span class="op">=</span> <span class="st">"proteins_msqrob"</span>, <span class="va">L</span>, modelColumn <span class="op">=</span> <span class="st">"msqrob_psm"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Let us retrieve the result table from the <code>rowData</code>. Note
-that the model column is named after the column name of the contrast
+that the model column is named after the column names of the contrast
 matrix <code>L</code>.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inference</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="st">"proteins_msqrob"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">inference</span><span class="op">$</span><span class="va">Protein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##               logFC           se       df            t     pval adjPval Protein</span></span>
-<span><span class="co">## A2AJB7 1.982815e-10 2.252067e-05 68.05713 8.804421e-06 0.999993       1  A2AJB7</span></span>
-<span><span class="co">## A2AJK6           NA           NA       NA           NA       NA      NA  A2AJK6</span></span>
-<span><span class="co">## A2AQP0           NA           NA       NA           NA       NA      NA  A2AQP0</span></span>
-<span><span class="co">## A2AWP8           NA           NA       NA           NA       NA      NA  A2AWP8</span></span>
-<span><span class="co">## A6H8H2           NA           NA       NA           NA       NA      NA  A6H8H2</span></span>
-<span><span class="co">## B1AVY7           NA           NA       NA           NA       NA      NA  B1AVY7</span></span></code></pre>
+<pre><code><span><span class="co">##        logFC           se       df  t pval adjPval Protein</span></span>
+<span><span class="co">## A2AJB7     0 1.991653e-10 68.06201  0    1       1  A2AJB7</span></span>
+<span><span class="co">## A2AJK6    NA           NA       NA NA   NA      NA  A2AJK6</span></span>
+<span><span class="co">## A2AQP0    NA           NA       NA NA   NA      NA  A2AQP0</span></span>
+<span><span class="co">## A2AWP8    NA           NA       NA NA   NA      NA  A2AWP8</span></span>
+<span><span class="co">## A6H8H2    NA           NA       NA NA   NA      NA  A6H8H2</span></span>
+<span><span class="co">## B1AVY7    NA           NA       NA NA   NA      NA  B1AVY7</span></span></code></pre>
 <p>The table contains the hypothesis testing results for every protein.
 Notice that some rows contain missing values. This is because data
-modelling resulted in a <code>fitError</code> for some proteins.</p>
-<p><strong>TODO</strong>: remove below and demonstrate msqrobRefit?</p>
-<p>We refer to <a href="https://github.com/statOmics/Msqrob2TMTPaper/blob/master/vignettes/spikein1.qmd" class="external-link">another
-vignette</a> that describes how to deal with <code>fitErrors</code>. We
-can use the table above directly to build a volcano plot using
+modelling resulted in a <code>fitError</code> for some proteins. Some
+models cannot be estimated either because some parameters could not be
+estimated due to missing values, for instance because a protein was not
+measured only in one of the groups of interest, or because a protein was
+measured from a single precursor ion alleviating the estimation of the
+spectrum effect.</p>
+<p>We can use the table above directly to build a volcano plot using
 <code>ggplot2</code> functionality.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">logFC</span>, y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">adjPval</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1334,12 +1384,12 @@ can use the table above directly to build a volcano plot using
 <span>                    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">Protein</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Statistical inference on differences between LF and HF (short duration)"</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"ridgeCondition"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-40-1.png" width="700"></p>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-45-1.png" width="700"></p>
 <p>In this example (remember this is a subset of the complete data set),
 only a few proteins pass the significance threshold of 5%. Let us
 visualise the protein with the largest fold change.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">targetProtein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">inference</span><span class="op">$</span><span class="va">logFC</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Q5SWU9"</span></span></code></pre>
 <p>To obtain the required data, we perform a little data manipulation
@@ -1355,7 +1405,7 @@ suitable for plotting.</li>
 with short diet duration.</li>
 <li>We reorder the sample identifiers to improve visualisation.</li>
 </ol>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ionData</span> <span class="op">&lt;-</span> <span class="va">mouse</span><span class="op">[</span><span class="va">targetProtein</span>, , <span class="st">"ions_norm"</span><span class="op">]</span> <span class="op">|&gt;</span> <span class="co">#1</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/longForm.html" class="external-link">longForm</a></span><span class="op">(</span>colvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span><span class="op">)</span>, <span class="co">#2</span></span>
 <span>               rowvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Protein.Accessions"</span>, <span class="st">"ionID"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1368,7 +1418,7 @@ in each sample. Each ion is linked across samples using a grey line.
 Samples are coloured according to the diet type. Finally, we split the
 plot in facets, one for each mixture, to visualise the heterogeneity
 induced by different pools of mice.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ionData</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colname</span>,</span>
 <span>        y <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1379,7 +1429,7 @@ induced by different pools of mice.</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="va">targetProtein</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-43-1.png" width="700"></p>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-48-1.png" width="700"></p>
 <p>The statistical analysis revealed a significant increase (positive
 log fold change) of the abundance for Q5SWU9 in the group fed with a
 low-fat diet compared to the high-fat diet fed group (upon early diet
@@ -1394,10 +1444,10 @@ duration<a class="anchor" aria-label="anchor" href="#difference-between-low-fat-
 <p>The second question one can ask is what proteins are affected by diet
 when only considering, this time, a long diet duration. Following the
 same approach as above, the contrast becomes.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hypothesis2</span> <span class="op">&lt;-</span> <span class="st">"ridgeDietLF = 0"</span></span></code></pre></div>
 <p>We run the same statistical analysis pipeline as above.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast</a></span><span class="op">(</span></span>
 <span>    <span class="va">hypothesis2</span>,</span>
 <span>    parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ridgeDietLF"</span>,<span class="st">"ridgeDurationShort"</span>,<span class="st">"ridgeDietLF:DurationShort"</span><span class="op">)</span></span>
@@ -1408,7 +1458,7 @@ same approach as above, the contrast becomes.</p>
 <span><span class="va">inference</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="st">"proteins_msqrob"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">inference</span><span class="op">$</span><span class="va">Protein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span></span></code></pre></div>
 <p>And we plot the results.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">logFC</span>, y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">adjPval</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1416,8 +1466,8 @@ same approach as above, the contrast becomes.</p>
 <span>                    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">Protein</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Statistical inference on differences between LF and HF (long duration)"</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"ridgeCondition"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-46-1.png" width="700"></p>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-51-1.png" width="700"></p>
 <p>Again, only a few proteins come out differentially abundant between
 the two diets, but after a long diet duration. Surprisingly, there is
 only a small overlap between differential protein after short duration
@@ -1441,11 +1491,11 @@ diet is defined by
 The average high-fat diet group is defined by
 <code>((Intercept) + DurationShort + (Intercept))/2</code>. The
 difference between the two results in the hypothesis below:</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hypothesis3</span> <span class="op">&lt;-</span> <span class="st">"ridgeDietLF + (ridgeDietLF:DurationShort)/2 = 0"</span></span></code></pre></div>
 <p>We next run again the same statistical analysis pipeline as
 above.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast</a></span><span class="op">(</span></span>
 <span>    <span class="va">hypothesis3</span>,</span>
 <span>    parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ridgeDietLF"</span>,<span class="st">"ridgeDurationShort"</span>,<span class="st">"ridgeDietLF:DurationShort"</span><span class="op">)</span></span>
@@ -1456,7 +1506,7 @@ above.</p>
 <span><span class="va">inference</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="st">"proteins_msqrob"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">inference</span><span class="op">$</span><span class="va">Protein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span></span></code></pre></div>
 <p>And we plot the results.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">logFC</span>, y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">adjPval</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1465,7 +1515,7 @@ above.</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Statistical inference on average difference between LF and HF"</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"ridgeCondition"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-49-1.png" width="700"></p>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-54-1.png" width="700"></p>
 <p>We find much more significant proteins when combining all available
 data to infer the differences between low-fat and high-fat diets,
 irrespective of duration. We also retrieve a good overlap between this
@@ -1480,10 +1530,10 @@ may be affected by duration, i.e. we want to infer on the difference of
 differences. The difference between hypothesis 1 and 2 is
 <code>(DietLF + DietLF:DurationShort) - (DietLF)</code> and results in
 the hypothesis below:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hypothesis4</span> <span class="op">&lt;-</span> <span class="st">"ridgeDietLF:DurationShort = 0"</span></span></code></pre></div>
 <p>We can proceed with the same statistical pipeline.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast</a></span><span class="op">(</span></span>
 <span>    <span class="va">hypothesis4</span>,</span>
 <span>    parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ridgeDietLF"</span>,<span class="st">"ridgeDurationShort"</span>,<span class="st">"ridgeDietLF:DurationShort"</span><span class="op">)</span></span>
@@ -1494,7 +1544,7 @@ the hypothesis below:</p>
 <span><span class="va">inference</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="st">"proteins_msqrob"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">inference</span><span class="op">$</span><span class="va">Protein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span></span></code></pre></div>
 <p>And we plot the results.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">logFC</span>, y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">adjPval</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1502,40 +1552,39 @@ the hypothesis below:</p>
 <span>                    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">Protein</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Statistical inference on the effect of duration on the differences between diets"</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"ridgeCondition"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-52-1.png" width="700"></p>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-57-1.png" width="700"></p>
 <p>There is only one protein for which duration impacts the effect of
-diet. Let us visually explore this changes for the most significant
+diet. Let us visually explore these changes for the most significant
 protein.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">targetProtein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">inference</span><span class="op">$</span><span class="va">adjPval</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "O08528"</span></span></code></pre>
 <p>We use again <code>Qfeatures</code>’s data manipulation pipeline.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ionData</span> <span class="op">&lt;-</span> <span class="va">mouse</span><span class="op">[</span><span class="va">targetProtein</span>, , <span class="st">"ions_norm"</span><span class="op">]</span> <span class="op">|&gt;</span> <span class="co">#1</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/longForm.html" class="external-link">longForm</a></span><span class="op">(</span>colvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">mouse</span><span class="op">)</span><span class="op">)</span>, <span class="co">#2</span></span>
-<span>               rowvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Protein.Accessions"</span>, <span class="st">"ionID"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>             rowvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Protein.Accessions"</span>, <span class="st">"ionID"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co">#3</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">colname</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">colname</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">Condition</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co">#4</span></span></code></pre></div>
-<p>And explore the peptide ion data, this time also facetting for
-duration in order to highlight changes in direction of the difference
-between low-fat and high-fat diets.</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">colname</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">colname</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">Diet</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co">#4</span></span></code></pre></div>
+<p>And we explore the peptide ion data by visualising the differences
+between LF and HF separately for each mixture and diet duration in order
+to highlight changes in direction between these differences according to
+duration. We link data points belonging to the same peptide ion using a
+grey line.</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ionData</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Run</span>, <span class="co">#colname,</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colname</span>,</span>
 <span>        y <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="co"># geom_line(aes(group = ionID), linewidth = 0.1) +</span></span>
-<span>    <span class="co">#geom_point(aes(colour = Condition)) +</span></span>
-<span>    <span class="co"># geom_boxplot(aes(colour = Condition)) +</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">rowname</span>, colour <span class="op">=</span> <span class="va">Diet</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="va">Duration</span> <span class="op">~</span> <span class="va">Mixture</span>, scales <span class="op">=</span> <span class="st">"free_x"</span>, labeller <span class="op">=</span> <span class="va">label_both</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="co">#labs(x = "Sample", y = "log2 intensity") +</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Run"</span>, y <span class="op">=</span> <span class="st">"log2 intensity"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">ionID</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">Condition</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">Mixture</span> <span class="op">~</span> <span class="va">Duration</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sample"</span>, y <span class="op">=</span> <span class="st">"log2 intensity"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="va">targetProtein</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-55-1.png" width="700"></p>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-60-1.png" width="700"></p>
 <p>The graph hints towards a slight increase in protein abundance in the
 low-fat diet group compared to the high-fat diet group during a short
 diet duration, but this increase disappears after a long diet duration.
@@ -1545,7 +1594,7 @@ further experimental validation.</p>
 <p>Note that we performed the statistical analysis for each hypothesis
 separately. However, <code>msqrob2</code> can assess multiple hypothesis
 at once.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">hypothesis1</span>, <span class="va">hypothesis2</span>, <span class="va">hypothesis3</span>, <span class="va">hypothesis4</span><span class="op">)</span>,</span>
 <span>    parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ridgeDietLF"</span>,<span class="st">"ridgeDurationShort"</span>,<span class="st">"ridgeDietLF:DurationShort"</span><span class="op">)</span></span>
@@ -1559,13 +1608,13 @@ overwrite the results with the argument
 <code>overwrite = TRUE</code>.</p>
 <p>We retrieve the inference tables from the <code>rowData</code> to
 generate the volcano plot.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inferenceTables</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="st">"proteins_msqrob"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>We here use a <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply()</a></code> loop to generate the plots. The
 code chunk is elaborate, but follows the same structure as in the
 previous section. This generates a list of volcano plots, one for each
 hypothesis.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">volcanoPlots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">inferenceTables</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">inference</span> <span class="op">&lt;-</span> <span class="va">inferenceTables</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="va">inference</span><span class="op">$</span><span class="va">Protein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span></span>
@@ -1580,9 +1629,9 @@ hypothesis.</p>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>We combine all the plots in a single figure using the
 <code>patchwork</code> packages.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">volcanoPlots</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-59-1.png" width="768"></p>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-64-1.png" width="768"></p>
 </div>
 </div>
 <div class="section level3">
@@ -1595,16 +1644,16 @@ summarised within each run. This has already been done in the
 preprocessing. Note, that we no longer have multiple abundance values
 for a protein in the same label of a run. Hence, we can omit the nested
 effects for label and ionID in run.</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">modelSum</span> <span class="op">&lt;-</span> <span class="op">~</span> <span class="va">Diet</span> <span class="op">*</span> <span class="va">Duration</span> <span class="op">+</span> <span class="co">## fixed effect for Diet and Duration with interaction</span></span>
-<span>        <span class="co"># (1 | Channel) + ## (1) random effect for channel is negligible</span></span>
+<span>        <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Label</span><span class="op">)</span> <span class="op">+</span> <span class="co">## (1) random effect for label</span></span>
 <span>        <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Mixture</span><span class="op">)</span> <span class="op">+</span> <span class="co">## (2) random effect for mixture</span></span>
 <span>        <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Run</span><span class="op">)</span> <span class="op">+</span> <span class="co">## (3) random effect for MS run</span></span>
 <span>        <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">BioReplicate</span><span class="op">)</span>  <span class="co">## (6) random effect for biorepeat (mouse)</span></span></code></pre></div>
 <p>For protein-level modelling, we use <code><a href="https://rdrr.io/pkg/msqrob2/man/msqrob.html" class="external-link">msqrob()</a></code> instead of
 <code><a href="https://rdrr.io/pkg/msqrob2/man/msqrobAggregate.html" class="external-link">msqrobAggregate()</a></code>, but their function arguments closely
 overlap.</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/msqrob.html" class="external-link">msqrob</a></span><span class="op">(</span></span>
 <span>    <span class="va">mouse</span>, i <span class="op">=</span> <span class="st">"proteins"</span>,</span>
 <span>    formula <span class="op">=</span> <span class="va">modelSum</span>,</span>
@@ -1614,17 +1663,17 @@ overlap.</p>
 <p>We perform hypothesis tests for the early, late, average and
 interaction effects. Note, that the specification of contrasts for the
 fixed effects remains the same.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mouse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/hypothesisTest.html" class="external-link">hypothesisTest</a></span><span class="op">(</span></span>
 <span>    <span class="va">mouse</span>, i <span class="op">=</span> <span class="st">"proteins"</span>, <span class="va">L</span>, modelColumn <span class="op">=</span> <span class="st">"msqrob_rrilmm"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The inference tables were all stored in the <code>rowData</code> as
 separate columns, like previously.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inferenceTablesSum</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">mouse</span><span class="op">[[</span><span class="st">"proteins"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>We here use again the <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply()</a></code> loop that generates the
 list of volcano plots, one for each hypothesis.</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">volcanoPlotsSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">inferenceTablesSum</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">inference</span> <span class="op">&lt;-</span> <span class="va">inferenceTablesSum</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="va">inference</span><span class="op">$</span><span class="va">Protein</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inference</span><span class="op">)</span></span>
@@ -1637,9 +1686,9 @@ list of volcano plots, one for each hypothesis.</p>
 <span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Hypothesis test:"</span>,</span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"tests_|ridge"</span>, <span class="st">""</span>, <span class="va">i</span><span class="op">)</span>, <span class="st">"= 0"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">volcanoPlotsSum</span><span class="op">)</span></span></code></pre></div>
-<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-65-1.png" width="768"></p>
+<p><img src="msqrob2_workshop_files/figure-html/unnamed-chunk-70-1.png" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -1740,53 +1789,58 @@ license.</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] ExploreModelMatrix_1.21.0   BiocFileCache_2.99.6       </span></span>
-<span><span class="co">##  [3] dbplyr_2.5.0                BiocParallel_1.43.4        </span></span>
-<span><span class="co">##  [5] patchwork_1.3.2             ggrepel_0.9.6              </span></span>
-<span><span class="co">##  [7] ggplot2_3.5.2               dplyr_1.1.4                </span></span>
-<span><span class="co">##  [9] msqrob2_1.17.1              QFeatures_1.19.3           </span></span>
-<span><span class="co">## [11] MultiAssayExperiment_1.35.9 SummarizedExperiment_1.39.1</span></span>
-<span><span class="co">## [13] Biobase_2.69.0              GenomicRanges_1.61.1       </span></span>
-<span><span class="co">## [15] Seqinfo_0.99.2              IRanges_2.43.0             </span></span>
-<span><span class="co">## [17] S4Vectors_0.47.0            BiocGenerics_0.55.1        </span></span>
-<span><span class="co">## [19] generics_0.1.4              MatrixGenerics_1.21.0      </span></span>
-<span><span class="co">## [21] matrixStats_1.5.0          </span></span>
+<span><span class="co">##  [1] ExploreModelMatrix_1.21.0   scater_1.37.0              </span></span>
+<span><span class="co">##  [3] scuttle_1.19.0              SingleCellExperiment_1.31.1</span></span>
+<span><span class="co">##  [5] BiocFileCache_2.99.6        dbplyr_2.5.1               </span></span>
+<span><span class="co">##  [7] BiocParallel_1.43.4         patchwork_1.3.2            </span></span>
+<span><span class="co">##  [9] ggrepel_0.9.6               ggplot2_4.0.0              </span></span>
+<span><span class="co">## [11] dplyr_1.1.4                 msqrob2_1.17.1             </span></span>
+<span><span class="co">## [13] QFeatures_1.19.3            MultiAssayExperiment_1.35.9</span></span>
+<span><span class="co">## [15] SummarizedExperiment_1.39.1 Biobase_2.69.0             </span></span>
+<span><span class="co">## [17] GenomicRanges_1.61.2        Seqinfo_0.99.2             </span></span>
+<span><span class="co">## [19] IRanges_2.43.0              S4Vectors_0.47.0           </span></span>
+<span><span class="co">## [21] BiocGenerics_0.55.1         generics_0.1.4             </span></span>
+<span><span class="co">## [23] MatrixGenerics_1.21.0       matrixStats_1.5.0          </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] Rdpack_2.6.4            DBI_1.2.3               httr2_1.2.1            </span></span>
-<span><span class="co">##   [4] rlang_1.1.6             magrittr_2.0.3          shinydashboard_0.7.3   </span></span>
-<span><span class="co">##   [7] clue_0.3-66             compiler_4.5.1          RSQLite_2.4.3          </span></span>
-<span><span class="co">##  [10] systemfonts_1.2.3       vctrs_0.6.5             reshape2_1.4.4         </span></span>
-<span><span class="co">##  [13] stringr_1.5.1           ProtGenerics_1.41.0     pkgconfig_2.0.3        </span></span>
-<span><span class="co">##  [16] crayon_1.5.3            fastmap_1.2.0           XVector_0.49.0         </span></span>
-<span><span class="co">##  [19] labeling_0.4.3          promises_1.3.3          rmarkdown_2.29         </span></span>
-<span><span class="co">##  [22] nloptr_2.2.1            ragg_1.4.0              purrr_1.1.0            </span></span>
-<span><span class="co">##  [25] bit_4.6.0               xfun_0.53               cachem_1.1.0           </span></span>
-<span><span class="co">##  [28] jsonlite_2.0.0          blob_1.2.4              later_1.4.3            </span></span>
-<span><span class="co">##  [31] DelayedArray_0.35.2     parallel_4.5.1          cluster_2.1.8.1        </span></span>
-<span><span class="co">##  [34] R6_2.6.1                bslib_0.9.0             stringi_1.8.7          </span></span>
-<span><span class="co">##  [37] RColorBrewer_1.1-3      limma_3.65.3            boot_1.3-31            </span></span>
-<span><span class="co">##  [40] jquerylib_0.1.4         Rcpp_1.1.0              knitr_1.50             </span></span>
-<span><span class="co">##  [43] BiocBaseUtils_1.11.2    httpuv_1.6.16           Matrix_1.7-3           </span></span>
-<span><span class="co">##  [46] splines_4.5.1           igraph_2.1.4            tidyselect_1.2.1       </span></span>
-<span><span class="co">##  [49] abind_1.4-8             yaml_2.3.10             codetools_0.2-20       </span></span>
-<span><span class="co">##  [52] curl_7.0.0              lattice_0.22-7          tibble_3.3.0           </span></span>
-<span><span class="co">##  [55] plyr_1.8.9              shiny_1.11.1            withr_3.0.2            </span></span>
-<span><span class="co">##  [58] evaluate_1.0.4          desc_1.4.3              filelock_1.0.3         </span></span>
-<span><span class="co">##  [61] pillar_1.11.0           BiocManager_1.30.26     DT_0.33                </span></span>
-<span><span class="co">##  [64] shinyjs_2.1.0           reformulas_0.4.1        scales_1.4.0           </span></span>
-<span><span class="co">##  [67] minqa_1.2.8             xtable_1.8-4            BiocStyle_2.37.1       </span></span>
-<span><span class="co">##  [70] glue_1.8.0              lazyeval_0.2.2          tools_4.5.1            </span></span>
-<span><span class="co">##  [73] lme4_1.1-37             fs_1.6.6                cowplot_1.2.0          </span></span>
-<span><span class="co">##  [76] grid_4.5.1              tidyr_1.3.1             rbibutils_2.3          </span></span>
-<span><span class="co">##  [79] MsCoreUtils_1.21.0      nlme_3.1-168            cli_3.6.5              </span></span>
-<span><span class="co">##  [82] rappdirs_0.3.3          textshaping_1.0.1       S4Arrays_1.9.1         </span></span>
-<span><span class="co">##  [85] AnnotationFilter_1.33.0 gtable_0.3.6            rintrojs_0.3.4         </span></span>
-<span><span class="co">##  [88] sass_0.4.10             digest_0.6.37           SparseArray_1.9.1      </span></span>
-<span><span class="co">##  [91] htmlwidgets_1.6.4       farver_2.1.2            memoise_2.0.1          </span></span>
-<span><span class="co">##  [94] htmltools_0.5.8.1       pkgdown_2.1.3           lifecycle_1.0.4        </span></span>
-<span><span class="co">##  [97] mime_0.13               statmod_1.5.0           bit64_4.6.0-1          </span></span>
-<span><span class="co">## [100] MASS_7.3-65</span></span></code></pre>
+<span><span class="co">##   [1] RColorBrewer_1.1-3      jsonlite_2.0.0          magrittr_2.0.4         </span></span>
+<span><span class="co">##   [4] ggbeeswarm_0.7.2        farver_2.1.2            nloptr_2.2.1           </span></span>
+<span><span class="co">##   [7] rmarkdown_2.29          fs_1.6.6                ragg_1.5.0             </span></span>
+<span><span class="co">##  [10] vctrs_0.6.5             memoise_2.0.1           minqa_1.2.8            </span></span>
+<span><span class="co">##  [13] htmltools_0.5.8.1       S4Arrays_1.9.1          BiocBaseUtils_1.11.2   </span></span>
+<span><span class="co">##  [16] curl_7.0.0              BiocNeighbors_2.3.1     SparseArray_1.9.1      </span></span>
+<span><span class="co">##  [19] sass_0.4.10             bslib_0.9.0             htmlwidgets_1.6.4      </span></span>
+<span><span class="co">##  [22] desc_1.4.3              plyr_1.8.9              httr2_1.2.1            </span></span>
+<span><span class="co">##  [25] cachem_1.1.0            igraph_2.1.4            mime_0.13              </span></span>
+<span><span class="co">##  [28] lifecycle_1.0.4         pkgconfig_2.0.3         rsvd_1.0.5             </span></span>
+<span><span class="co">##  [31] Matrix_1.7-4            R6_2.6.1                fastmap_1.2.0          </span></span>
+<span><span class="co">##  [34] shiny_1.11.1            rbibutils_2.3           clue_0.3-66            </span></span>
+<span><span class="co">##  [37] digest_0.6.37           irlba_2.3.5.1           textshaping_1.0.3      </span></span>
+<span><span class="co">##  [40] RSQLite_2.4.3           beachmat_2.25.5         filelock_1.0.3         </span></span>
+<span><span class="co">##  [43] labeling_0.4.3          abind_1.4-8             compiler_4.5.1         </span></span>
+<span><span class="co">##  [46] bit64_4.6.0-1           withr_3.0.2             S7_0.2.0               </span></span>
+<span><span class="co">##  [49] viridis_0.6.5           DBI_1.2.3               MASS_7.3-65            </span></span>
+<span><span class="co">##  [52] rappdirs_0.3.3          DelayedArray_0.35.2     tools_4.5.1            </span></span>
+<span><span class="co">##  [55] vipor_0.4.7             beeswarm_0.4.0          httpuv_1.6.16          </span></span>
+<span><span class="co">##  [58] glue_1.8.0              promises_1.3.3          nlme_3.1-168           </span></span>
+<span><span class="co">##  [61] grid_4.5.1              cluster_2.1.8.1         reshape2_1.4.4         </span></span>
+<span><span class="co">##  [64] gtable_0.3.6            tidyr_1.3.1             BiocSingular_1.25.0    </span></span>
+<span><span class="co">##  [67] ScaledMatrix_1.17.0     XVector_0.49.0          pillar_1.11.0          </span></span>
+<span><span class="co">##  [70] stringr_1.5.2           limma_3.65.4            later_1.4.4            </span></span>
+<span><span class="co">##  [73] rintrojs_0.3.4          splines_4.5.1           lattice_0.22-7         </span></span>
+<span><span class="co">##  [76] bit_4.6.0               tidyselect_1.2.1        knitr_1.50             </span></span>
+<span><span class="co">##  [79] reformulas_0.4.1        gridExtra_2.3           ProtGenerics_1.41.0    </span></span>
+<span><span class="co">##  [82] shinydashboard_0.7.3    xfun_0.53               statmod_1.5.0          </span></span>
+<span><span class="co">##  [85] DT_0.34.0               stringi_1.8.7           lazyeval_0.2.2         </span></span>
+<span><span class="co">##  [88] yaml_2.3.10             boot_1.3-32             evaluate_1.0.5         </span></span>
+<span><span class="co">##  [91] codetools_0.2-20        MsCoreUtils_1.21.0      tibble_3.3.0           </span></span>
+<span><span class="co">##  [94] BiocManager_1.30.26     cli_3.6.5               xtable_1.8-4           </span></span>
+<span><span class="co">##  [97] systemfonts_1.2.3       Rdpack_2.6.4            jquerylib_0.1.4        </span></span>
+<span><span class="co">## [100] Rcpp_1.1.0              png_0.1-8               parallel_4.5.1         </span></span>
+<span><span class="co">## [103] pkgdown_2.1.3           blob_1.2.4              AnnotationFilter_1.33.0</span></span>
+<span><span class="co">## [106] lme4_1.1-37             viridisLite_0.4.2       scales_1.4.0           </span></span>
+<span><span class="co">## [109] purrr_1.1.0             crayon_1.5.3            BiocStyle_2.37.1       </span></span>
+<span><span class="co">## [112] rlang_1.1.6             cowplot_1.2.0           shinyjs_2.1.0</span></span></code></pre>
 </div>
   </div>
 
