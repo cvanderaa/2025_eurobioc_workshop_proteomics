@@ -1,5 +1,5 @@
 Package: Eurobioc2025WorkshopProteomics
-Title:  "msqrob2: robust modelling workflow for mass spectrometry-based proteomics"
+Title:  "msqrob2 workshop: robust modelling workflow for mass spectrometry-based proteomics"
 Version: 1.0.0
 Authors@R: 
     c(person(given = "Christophe",
