@@ -91,6 +91,7 @@ with the audience.
 - ggplot2
 - patchwork
 - dplyr
+- scater
 - ExploreModelMatrix
 
 ### Time outline
