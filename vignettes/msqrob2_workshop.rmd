@@ -502,14 +502,16 @@ The data exploration leads to several observations:
 - Part of this run effect is influenced by which fraction it contains
   since samples from the same fraction tend to be closer than samples from different
   fractions. 
-- It is difficult to identify an effect of mouse (biological
-  replicate) because every run contains distinct mice. However, this
-  does not exclude an effect of mice which has been identified as a
-  potential source of variation and hence should still be modelled.
 - There is potentially also an effect of TMT mixture since samples
   from the same mixtures tend to cluster together (in the center of
   the plot). However, this effect are more subtle to detect and
   difficult to disentangle from the run and fraction effects.
+- It is difficult to identify an effect of mouse (biological
+  replicate) because every mixture, which is profiled in multiple
+  fractions, contains distinct mice, and the mouse effect is
+  overwhelmed by the large run-to-run varability. However, it is
+  important to acknowledge that intensities from the same biological
+  replicates (mouse) across fractions will be correlated.
 - Although again very subtle, we can see within each run that samples
   from the mice with the same diet tends to group together. However,
   these effects are overwhelmed by the run effects. An effect of
@@ -544,19 +546,15 @@ they are modelled:
 
 2. **Biological replicate effect**: the experiment involves biological
    replication as the adipose tissue extracts were sampled from 20
-   mice (5 mice per Diet x Duration combination). Replicate-specific
-   effects occurs due to uncontrollable factors, such as social
-   behavior, feeding behavior, physical activity, occasional
-   injury,... Two mice will never provide exactly the same sample material,
-   even were they genetically identical and manipulated identically.
-   These effects are typically modelled as random effects which are
-   considered as a random sample from the population of all possible
-   mice and are assumed to be i.i.d normally distributed with mean 0
-   and constant variance, $u_{mouse} \sim
-   N(0,\sigma^{2,\text{mouse}})$. The use of random effects thus
-   models the correlation in the data, explicitly. We expect that
+   mice (5 mice per Diet x Duration combination). The proteome for
+   each animal has been profiled by multiple fractions, and
    intensities from the same mouse are more alike than intensities
-   between mice.
+   between mice. This correlation can be modelled by **random effects**.
+   Indeed, the mice in the study can be considered as a random sample
+   from the population, and they will differ if the experiment were to
+   be repeated. The mouse effect is assumed to be i.i.d normally
+   distributed with mean 0 and constant variance, $u_{mouse} \sim
+   N(0,\sigma^{2,\text{mouse}})$.
 
 ```{r}
 length(unique(mouse$BioReplicate))
