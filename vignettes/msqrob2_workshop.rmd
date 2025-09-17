@@ -1117,7 +1117,7 @@ volcanoPlotsSum <- lapply(names(inferenceTablesSum), function(i) {
         geom_text_repel(data = filter(inference, adjPval < 0.05),
                         aes(label = Protein)) +
         geom_point() +
-        ggtitle("Hypothesis test:", i, "= 0")
+        ggtitle(paste0("Hypothesis test:", i, "= 0"))
 })
 ```
 
