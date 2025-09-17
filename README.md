@@ -7,7 +7,7 @@ Authors:
     Laurent Gatto^[UCLouvain],
     Lieven Clement^[UGhent].
     <br/>
-Last modified: \today.
+Last modified: September 16, 2025.
 
 ## Overview
 
@@ -38,10 +38,6 @@ tests and how to prioritise proteomic markers that change in response
 to a condition of interest. Depending on the progress of the group, we
 will also briefly explore the emerging field of single-cell
 proteomics, discussing the additional challenges posed by these data.
-This workshop is designed for proteomics researchers who want to learn
-how to analyse their data using reproducible and statistically sound
-workflows, as well as for omics data analysts interested in expanding
-their skill set to include proteomics.
 
 ### Pre-requisites
 
@@ -50,10 +46,10 @@ their skill set to include proteomics.
 * Familiarity with MS-based proteomics data analysis
 * Familiarity with statistical analysis (t-tests, design of experiment)
 
-If you don't have at least two out of four prerequisites, you are
-still welcome to follow the workshop, but do not try to run the
-analysis yourself during the lecture. You should rather focus on the
-explanations.
+If you don't have at least two out of the four prerequisites, you are
+still welcome to follow the workshop, but we advise to not try to run
+the analysis yourself during the lecture. You should rather focus on
+the explanations.
 
 Relevant background reading for the workshop:
 
@@ -71,6 +67,11 @@ Relevant background reading for the workshop:
   [Link to paper](https://doi.org/10.1074/mcp.M115.055897);
 
 ### Participation
+
+This workshop is designed for proteomics researchers who want to learn
+how to analyse their data using reproducible and statistically sound
+workflows, as well as for omics data analysts interested in expanding
+their skill set to include proteomics.
 
 The workshop will introduce participants to important concepts 
 regarding the statistical analysis of MS-based proteomics and how the
